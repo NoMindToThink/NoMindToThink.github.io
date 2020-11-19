@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/h_something/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/h_something/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/h_something/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/h_something/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/h_something/css/main.css">
+
+
+<link rel="stylesheet" href="/h_something/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ddota2.gitee.io","root":"/h_something/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="repmgr教程简介repmgr是一个开源工具套件，用于管理PostgreSQL服务器集群中的复制和故障转移。它使用工具来增强PostgreSQL的内置热备份功能，以设置备用服务器，监控复制以及执行管理任务，例如故障转移或手动切换操作。 前期准备两台装有 postgresql 9.5 的服务器。 1. 安装1.1 下载源码包https:&#x2F;&#x2F;repmgr.org&#x2F;download&#x2F;repmgr-5.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pg_repmgr">
+<meta property="og:url" content="https://ddota2.gitee.io/2020/02/15/pg-repmgr/index.html">
+<meta property="og:site_name" content="D">
+<meta property="og:description" content="repmgr教程简介repmgr是一个开源工具套件，用于管理PostgreSQL服务器集群中的复制和故障转移。它使用工具来增强PostgreSQL的内置热备份功能，以设置备用服务器，监控复制以及执行管理任务，例如故障转移或手动切换操作。 前期准备两台装有 postgresql 9.5 的服务器。 1. 安装1.1 下载源码包https:&#x2F;&#x2F;repmgr.org&#x2F;download&#x2F;repmgr-5.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-15T02:30:24.000Z">
+<meta property="article:modified_time" content="2020-11-19T08:51:20.139Z">
+<meta property="article:author" content="Dota2 player">
+<meta property="article:tag" content="postgresql">
+<meta property="article:tag" content="database">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ddota2.gitee.io/2020/02/15/pg-repmgr/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>pg_repmgr | D</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/h_something/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">D</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">而已</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/h_something/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/h_something/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/h_something/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/h_something/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2020/02/15/pg-repmgr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/h_something/images/avatar.gif">
+      <meta itemprop="name" content="Dota2 player">
+      <meta itemprop="description" content="楼下的男人病的要死">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="D">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pg_repmgr
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-15 10:30:24" itemprop="dateCreated datePublished" datetime="2020-02-15T10:30:24+08:00">2020-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-19 16:51:20" itemprop="dateModified" datetime="2020-11-19T16:51:20+08:00">2020-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/h_something/categories/postgresql/" itemprop="url" rel="index"><span itemprop="name">postgresql</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="repmgr教程"><a href="#repmgr教程" class="headerlink" title="repmgr教程"></a>repmgr教程</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>repmgr是一个开源工具套件，用于管理PostgreSQL服务器集群中的复制和故障转移。它使用工具来增强PostgreSQL的内置热备份功能，以设置备用服务器，监控复制以及执行管理任务，例如故障转移或手动切换操作。</p>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><p>两台装有 postgresql 9.5 的服务器。</p>
+<h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>1.1 下载源码包<a href="https://repmgr.org/download/repmgr-5.0.0.tar.gz" target="_blank" rel="noopener">https://repmgr.org/download/repmgr-5.0.0.tar.gz</a><br>1.2 解压 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf repmgr-5.0.0.tar.gz</span><br></pre></td></tr></table></figure>
+<p>1.3 进入目录并编译<br>安装编译所需库</p>
+<ul>
+<li>flex</li>
+<li>libedit-dev</li>
+<li>libkrb5-dev</li>
+<li>libpam0g-dev</li>
+<li>libreadline-dev</li>
+<li>libselinux1-dev</li>
+<li>libssl-dev</li>
+<li>libxml2-dev</li>
+<li>libxslt1-dev<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install flex libedit-dev libkrb5-dev libpam0g-dev libreadline-dev libselinux1-dev libssl-dev libxml2-dev libxslt1-dev</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2. 配置"></a>2. 配置</h2>可复制 sample, sample 位于解压的根目录 repmgr.conf.sample。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp repmgr.conf.sample &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br></pre></td></tr></table></figure>
+修改以下关键信息<br>主<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">node_id&#x3D;1</span><br><span class="line">node_name&#x3D;&#39;138&#39;	</span><br><span class="line">conninfo&#x3D;&#39;host&#x3D;db1 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2&#39;	</span><br><span class="line">data_directory&#x3D;&#39;&#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;main&#39;</span><br><span class="line">pg_bindir&#x3D;&#39;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#39;		</span><br><span class="line">repmgr_bindir&#x3D;&#39;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#39;</span><br></pre></td></tr></table></figure>
+从<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">node_id&#x3D;2</span><br><span class="line">node_name&#x3D;&#39;139&#39;	</span><br><span class="line">conninfo&#x3D;&#39;host&#x3D;db2 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2&#39;	</span><br><span class="line">data_directory&#x3D;&#39;&#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;main&#39;</span><br><span class="line">pg_bindir&#x3D;&#39;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#39;		</span><br><span class="line">repmgr_bindir&#x3D;&#39;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#39;</span><br></pre></td></tr></table></figure>
+<h2 id="3-从库复制主库"><a href="#3-从库复制主库" class="headerlink" title="3. 从库复制主库"></a>3. 从库复制主库</h2>主库中创建extension,psql 连接数据库后输入<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create extension repmgr</span><br></pre></td></tr></table></figure>
+创建流复制角色<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">ROLE</span> repl login <span class="keyword">replication</span> encrypted <span class="keyword">password</span> <span class="string">'d'</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>3.1 修改主库配置<br>postgresql.conf, 和一般的流复制配置无异</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">listen_addresses &#x3D; &#39;*&#39; # 监听来自任何地址的请求</span><br><span class="line">archive_mode &#x3D; on # 开启归档</span><br><span class="line">archive_command &#x3D; &#39;cp %p &#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;pg_archive&#x2F;%f&#39; # 归档 logfile segment 命令 %p 代表需要归档的文件路径，%f 归档文件名，此目录需要属于postgres角色，一面权限不足。</span><br><span class="line">wal_level &#x3D; hot_standby  # 归档开启热备用   minimal, archive, hot_standby, or logical</span><br><span class="line">max_wal_senders &#x3D; 10 # 最大wal发送者数量。通常和从库数量一致。</span><br><span class="line">wal_keep_segments &#x3D; 256 # 保留的最大日志文件段。一个16MB。</span><br><span class="line">wal_sender_timeout &#x3D; 60s # 发送超时时间</span><br><span class="line">max_connections &#x3D; 100 # 这个设置要注意下，从库的max_connections必须要大于主库的。（不知道）。最大连接数。</span><br><span class="line">wal_log_hints &#x3D; on  # 不然会导致主服务器挂掉之后恢复出问题。pg_rewind</span><br><span class="line"># 从库配置</span><br><span class="line">hot_standby &#x3D; on  # 在恢复期间是否允许查询</span><br><span class="line">max_standby_archive_delay &#x3D; 30s # 读取 archive WAL时，取消查询时的最大延迟，-1 无限</span><br><span class="line">#max_standby_streaming_delay &#x3D; 30s # 读取streaming wal 取消查询的最大延迟，-1 无限</span><br><span class="line">wal_receiver_status_interval &#x3D; 10s # 发送回复的间隔</span><br><span class="line">hot_standby_feedback &#x3D; off  # 从 standby 状态发送信息以防止冲突</span><br><span class="line">wal_receiver_timeout &#x3D; 60s # 接收 master 等待的时间，默认 milliseconds</span><br><span class="line">wal_retrieve_retry_interval &#x3D; 5s # 尝试失败后重新检索 WAL 的间隔</span><br></pre></td></tr></table></figure>
+<p>pg_hba.conf</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># local      DATABASE  USER  METHOD  [OPTIONS]</span><br><span class="line"># host       DATABASE  USER  ADDRESS  METHOD  [OPTIONS]</span><br><span class="line">host    replication     repl        0.0.0.0&#x2F;0            md5</span><br><span class="line">host    replication     postgres        0.0.0.0&#x2F;0            md5</span><br></pre></td></tr></table></figure>
+<p>3.2 主库注册到 repmgr,并查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">repmgr -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf primary register</span><br><span class="line">INFO: connecting to primary database...</span><br><span class="line">NOTICE: attempting to install extension &quot;repmgr&quot;</span><br><span class="line">NOTICE: &quot;repmgr&quot; extension successfully installed</span><br><span class="line">NOTICE: primary node record (ID: 1) registered</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">repmgr cluster show -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br><span class="line"> ID | Name | Role    | Status    | Upstream | Location | Priority | Connection string</span><br><span class="line">----+------+---------+-----------+----------+----------+----------+---------------------------------------------------------------------</span><br><span class="line"> 1  | 138  | primary | * running |          | default  | 100      | host&#x3D;db1 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br></pre></td></tr></table></figure>
+<p>3.3 从库配置<br>将密码连接信息存储在.pgpass文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~&#x2F;.pgpass</span><br></pre></td></tr></table></figure>
+<p>输入以下信息，格式为 host:port:DBName:username:password</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db1:5432:postgres:postgres:d</span><br><span class="line">db2:5432:postgres:postgres:d</span><br></pre></td></tr></table></figure>
+<p>然后设置权限chmod 600 ~/.pgpass<br>clone 执行，执行前需要清空 pgdata 目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repmgr -h db1 -U postgres -d postgres -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf standby clone</span><br></pre></td></tr></table></figure>
+<p>你会发现目录生成了，且 recovery.conf 也生成了。<br>启动从库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl -D . start</span><br></pre></td></tr></table></figure>
+<p>然后注册从库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">repmgr standby register -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br><span class="line">INFO: connecting to local node &quot;139&quot; (ID: 2)</span><br><span class="line">INFO: connecting to primary database</span><br><span class="line">WARNING: --upstream-node-id not supplied, assuming upstream node is primary (node ID 1)</span><br><span class="line">INFO: standby registration complete</span><br><span class="line">NOTICE: standby node &quot;139&quot; (ID: 2) successfully registered</span><br></pre></td></tr></table></figure>
+<p>查看节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">repmgr cluster show -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br><span class="line"> ID | Name | Role    | Status    | Upstream | Location | Priority | Connection string</span><br><span class="line">----+------+---------+-----------+----------+----------+----------+---------------------------------------------------------------------</span><br><span class="line"> 1  | 138  | primary | * running |          | default  | 100      | host&#x3D;db1 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br><span class="line"> 2  | 139  | standby |   running | 138      | default  | 100      | host&#x3D;db2 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-配置自动failover-如果使用了-pgpool-failover，则不要使用-repmgr-的failover"><a href="#4-配置自动failover-如果使用了-pgpool-failover，则不要使用-repmgr-的failover" class="headerlink" title="4.配置自动failover(如果使用了 pgpool failover，则不要使用 repmgr 的failover)"></a>4.配置自动failover(如果使用了 pgpool failover，则不要使用 repmgr 的failover)</h2><ol>
+<li>因为自动 failover 基于repmgrd，首先需要包含其关联库,postgresql.conf,配置下面一行,需要重启<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shared_preload_libraries &#x3D;&#39;repmgr&#39;</span><br></pre></td></tr></table></figure>
+主从都需要重启:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl -D . restart</span><br></pre></td></tr></table></figure></li>
+<li>配置repmgr.conf,配置在上面配置的基础上添加（主从都需要）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">failover&#x3D;automatic # 开启自动故障转移</span><br><span class="line">promote_command&#x3D;&#39;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#x2F;repmgr standby promote -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf --log-to-file&#39;</span><br><span class="line">follow_command&#x3D;&#39;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#x2F;repmgr standby follow -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf --log-to-file --upstream-node-id&#x3D;%n&#39;</span><br><span class="line">#上面这两个命令必须绝对路径</span><br></pre></td></tr></table></figure></li>
+<li>主备均要启动 repmgrd 服务<br>配置如果改了，则需要 kill 掉，然后重新启动.<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repmgrd -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br></pre></td></tr></table></figure></li>
+<li>测试</li>
+<li><ol>
+<li>主库挂掉<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl -D . stop</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li>2 副库则看到<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[2020-02-13 20:14:49] [INFO] checking state of node 1, 6 of 6 attempts</span><br><span class="line">[2020-02-13 20:14:49] [WARNING] unable to ping &quot;user&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2 dbname&#x3D;postgres host&#x3D;db1 fallback_application_name&#x3D;repmgr&quot;</span><br><span class="line">[2020-02-13 20:14:49] [DETAIL] PQping() returned &quot;PQPING_NO_RESPONSE&quot;</span><br><span class="line">[2020-02-13 20:14:49] [WARNING] unable to reconnect to node 1 after 6 attempts</span><br><span class="line">[2020-02-13 20:14:49] [INFO] 0 active sibling nodes registered</span><br><span class="line">[2020-02-13 20:14:49] [INFO] primary and this node have the same location (&quot;default&quot;)</span><br><span class="line">[2020-02-13 20:14:49] [INFO] no other sibling nodes - we win by default</span><br><span class="line">[2020-02-13 20:14:49] [NOTICE] this node is the only available candidate and will now promote itself</span><br><span class="line">[2020-02-13 20:14:49] [INFO] promote_command is:</span><br><span class="line">&quot;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#x2F;repmgr standby promote -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf --log-to-file&quot;</span><br><span class="line">[2020-02-13 20:14:49] [NOTICE] promoting standby to primary</span><br><span class="line">[2020-02-13 20:14:49] [DETAIL] promoting server &quot;139&quot; (ID: 2) using &quot;&#x2F;usr&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;bin&#x2F;pg_ctl  -w -D &#39;&#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;9.5&#x2F;main&#39; promote&quot;</span><br><span class="line">LOG:  received promote request</span><br><span class="line">[2020-02-13 20:14:49] [NOTICE] LOG:  redo done at 0&#x2F;5000028</span><br><span class="line">waiting up to 60 seconds (parameter &quot;promote_check_timeout&quot;) for promotion to complete</span><br><span class="line">LOG:  last completed transaction was at log time 2020-02-13 04:13:29.417036-08</span><br><span class="line">LOG:  selected new timeline ID: 2</span><br><span class="line">LOG:  archive recovery complete</span><br><span class="line">LOG:  MultiXact member wraparound protections are now enabled</span><br><span class="line">LOG:  database system is ready to accept connections</span><br><span class="line">LOG:  autovacuum launcher started</span><br><span class="line">[2020-02-13 20:14:50] [NOTICE] STANDBY PROMOTE successful</span><br><span class="line">[2020-02-13 20:14:50] [DETAIL] server &quot;139&quot; (ID: 2) was successfully promoted to primary</span><br><span class="line">[2020-02-13 20:14:50] [INFO] 0 followers to notify</span><br><span class="line">[2020-02-13 20:14:50] [INFO] switching to primary monitoring mode</span><br><span class="line">[2020-02-13 20:14:50] [NOTICE] monitoring cluster primary &quot;139&quot; (ID: 2)</span><br></pre></td></tr></table></figure>
+可以看到副库已经变成了主库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">postgres@ubuntu:~&#x2F;9.5&#x2F;main$ repmgr cluster show -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br><span class="line"> ID | Name | Role    | Status    | Upstream | Location | Priority | Connection string</span><br><span class="line">----+------+---------+-----------+----------+----------+----------+---------------------------------------------------------------------</span><br><span class="line"> 1  | 138  | primary | - failed  |          | default  | 100      | host&#x3D;db1 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br><span class="line"> 2  | 139  | primary | * running |          | default  | 100      | host&#x3D;db2 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br><span class="line"></span><br><span class="line">WARNING: following issues were detected</span><br><span class="line">  - unable to connect to node &quot;138&quot; (ID: 1)</span><br></pre></td></tr></table></figure></li>
+<li>3 恢复<br>也就是将主库设置为新的从库<br>创建 recovery.conf 文件。<br>内部配置和备用库基本一样<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">standby_mode &#x3D; &#39;on&#39; # 热备份mode</span><br><span class="line">primary_conninfo &#x3D; &#39;user&#x3D;repl password&#x3D;d host&#x3D;192.168.56.139 port&#x3D;5432 sslmode&#x3D;prefer sslcompression&#x3D;1 krbsrvname&#x3D;postgres&#39; #  连接信息</span><br><span class="line">recovery_target_timeline &#x3D; &#39;latest&#39; # 复制最新数据</span><br></pre></td></tr></table></figure>
+启动<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl start</span><br></pre></td></tr></table></figure>
+可以看到<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">postgres@ubuntu:~&#x2F;9.5&#x2F;main$ repmgr cluster show -f &#x2F;etc&#x2F;postgresql&#x2F;repmgr.conf</span><br><span class="line"> ID | Name | Role    | Status    | Upstream | Location | Priority | Connection string</span><br><span class="line">----+------+---------+-----------+----------+----------+----------+--------------------------------------------------------------------                      -</span><br><span class="line"> 1  | 138  | standby |   running |          | default  | 100      | host&#x3D;db1 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br><span class="line"> 2  | 139  | primary | * running |          | default  | 100      | host&#x3D;db2 user&#x3D;postgres dbname&#x3D;postgres password&#x3D;d connect_timeout&#x3D;2</span><br></pre></td></tr></table></figure>
+成功切换</li>
+</ol>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ol>
+<li><p>apt 安装后并配置数据库会导致启动数据库时could not access file “repmgr”: No such file or directory<br>It means the repmgr extension code is not installed in the PostgreSQL application directory. This typically happens when using PostgreSQL packages provided by a third-party vendor, which often have different filesystem layouts.</p>
+<p>Either use PostgreSQL packages provided by the community or 2ndQuadrant; if this is not possible, contact your vendor for assistance.<br>简单就是说用的可能时第三方的包，还是从官网下载包并编译安装吧。</p>
+</li>
+<li><p>提示未输入密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ERROR: connection to database failed</span><br><span class="line">DETAIL:</span><br><span class="line">fe_sendauth: no password supplied</span><br><span class="line"></span><br><span class="line">ERROR: unable to establish necessary replication connections</span><br><span class="line">HINT: check replication permissions on the source server</span><br></pre></td></tr></table></figure>
+<p>检查 pg_hba.conf，以及 ~/.pgpass 是否输入正确的用户密码。没找到问题，然后重新初始化数据库部署了一次，就好了。</p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考:"></a>参考:</h2></li>
+<li><p><a href="https://repmgr.org/docs/repmgr.html" target="_blank" rel="noopener">https://repmgr.org/docs/repmgr.html</a></p>
+</li>
+<li><p><a href="http://www.cslingjun.com/2019/11/27/PostgreSQL%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4repmgr/" target="_blank" rel="noopener">http://www.cslingjun.com/2019/11/27/PostgreSQL%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4repmgr/</a></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/h_something/tags/postgresql/" rel="tag"># postgresql</a>
+              <a href="/h_something/tags/database/" rel="tag"># database</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/h_something/2020/02/11/pg-pool/" rel="prev" title="pg_pool 简单教程">
+      <i class="fa fa-chevron-left"></i> pg_pool 简单教程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/h_something/2020/06/07/hello-world/" rel="next" title="Hello World">
+      Hello World <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#repmgr教程"><span class="nav-number">1.</span> <span class="nav-text">repmgr教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前期准备"><span class="nav-number">1.2.</span> <span class="nav-text">前期准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装"><span class="nav-number">1.3.</span> <span class="nav-text">1. 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-配置"><span class="nav-number">1.4.</span> <span class="nav-text">2. 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-从库复制主库"><span class="nav-number">1.5.</span> <span class="nav-text">3. 从库复制主库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-配置自动failover-如果使用了-pgpool-failover，则不要使用-repmgr-的failover"><span class="nav-number">1.6.</span> <span class="nav-text">4.配置自动failover(如果使用了 pgpool failover，则不要使用 repmgr 的failover)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">1.7.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">1.8.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.9.</span> <span class="nav-text">参考:</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Dota2 player</p>
+  <div class="site-description" itemprop="description">楼下的男人病的要死</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/h_something/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/h_something/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/h_something/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Dota2 player</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/h_something/lib/anime.min.js"></script>
+  <script src="/h_something/lib/velocity/velocity.min.js"></script>
+  <script src="/h_something/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/h_something/js/utils.js"></script>
+
+<script src="/h_something/js/motion.js"></script>
+
+
+<script src="/h_something/js/schemes/muse.js"></script>
+
+
+<script src="/h_something/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

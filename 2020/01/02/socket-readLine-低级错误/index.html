@@ -20,18 +20,21 @@
     var CONFIG = {"hostname":"ddota2.gitee.io","root":"/h_something/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="楼下的男人病的要死">
-<meta property="og:type" content="website">
-<meta property="og:title" content="D">
-<meta property="og:url" content="https://ddota2.gitee.io/tags/linux/index.html">
+  <meta name="description" content="记录一次使用关于通过netcat工具连接socket的问题吧环境本地环境 win10 企业版（2019-1206安装，奇怪不应该是专业版吗，而且我没重装系统呀，难道是上次注册表的问题？）:  netcat: v1.12 NT jdk: 1.8.0_112 正式环境 ubuntu: 16.04.6 netcat: OpenBSD netcat (Debian patchlevel 1.105-7ub">
+<meta property="og:type" content="article">
+<meta property="og:title" content="socket-readLine-低级错误">
+<meta property="og:url" content="https://ddota2.gitee.io/2020/01/02/socket-readLine-%E4%BD%8E%E7%BA%A7%E9%94%99%E8%AF%AF/index.html">
 <meta property="og:site_name" content="D">
-<meta property="og:description" content="楼下的男人病的要死">
+<meta property="og:description" content="记录一次使用关于通过netcat工具连接socket的问题吧环境本地环境 win10 企业版（2019-1206安装，奇怪不应该是专业版吗，而且我没重装系统呀，难道是上次注册表的问题？）:  netcat: v1.12 NT jdk: 1.8.0_112 正式环境 ubuntu: 16.04.6 netcat: OpenBSD netcat (Debian patchlevel 1.105-7ub">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-02T08:11:09.000Z">
+<meta property="article:modified_time" content="2020-11-19T08:41:30.573Z">
 <meta property="article:author" content="Dota2 player">
-<meta property="article:tag" content="D">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="socket">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ddota2.gitee.io/tags/linux/">
+<link rel="canonical" href="https://ddota2.gitee.io/2020/01/02/socket-readLine-%E4%BD%8E%E7%BA%A7%E9%94%99%E8%AF%AF/">
 
 
 <script id="page-configurations">
@@ -39,12 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: linux | D</title>
+  <title>socket-readLine-低级错误 | D</title>
   
 
 
@@ -153,51 +156,110 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">linux
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2020/01/02/socket-readLine-%E4%BD%8E%E7%BA%A7%E9%94%99%E8%AF%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/h_something/images/avatar.gif">
+      <meta itemprop="name" content="Dota2 player">
+      <meta itemprop="description" content="楼下的男人病的要死">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="D">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          socket-readLine-低级错误
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-02 16:11:09" itemprop="dateCreated datePublished" datetime="2020-01-02T16:11:09+08:00">2020-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-19 16:41:30" itemprop="dateModified" datetime="2020-11-19T16:41:30+08:00">2020-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/h_something/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2019</span>
+        <h1 id="记录一次使用关于通过netcat工具连接socket的问题吧"><a href="#记录一次使用关于通过netcat工具连接socket的问题吧" class="headerlink" title="记录一次使用关于通过netcat工具连接socket的问题吧"></a>记录一次使用关于通过netcat工具连接socket的问题吧</h1><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><pre><code>本地环境
+win10 企业版（2019-1206安装，奇怪不应该是专业版吗，而且我没重装系统呀，难道是上次注册表的问题？）: 
+netcat: v1.12 NT
+jdk: 1.8.0_112
+正式环境
+ubuntu: 16.04.6
+netcat: OpenBSD netcat (Debian patchlevel 1.105-7ubuntu1)
+jdk: 1.8.0_201-b09 </code></pre><p>在写连接设备程序时，用到了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String sb = bufferedReader.readLine()</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>程序直接部署上去，结果一夜过后发现几个T的容量直接沾满了，导致数据库挂掉了。于是查看一下是因为此程序的log写满了，觉着奇怪。删掉日志文件，重新启动，日志也没有飞速增加。<br>但是，当我使用ubuntu的nc工具连接然后断开时，发现几乎以满IO的速度写入日志。发现 bufferedReader.readLine() 不断的获取到null，然后空指针异常填满了日志。于是程序改成了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ((line = bufferedReader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样改了之后，日志确实不会继续增加了，但是发现一个新的问题，每断开一个连接，cpu就会占满一个核，使用top命令发现%CPU指数基本为（断开次数*100%），于是发现是 nc 工具ctrl+c后不会关闭socket的问题。<br>因为我外部还套了一层循环，但是在windows使用nc测试时，如果断开连接则会抛出异常Connection reset，从而跳出循环。也就不存在什么资源占用的问题。但是ubuntu的nc命令，断开连接后，socket 仍然未关闭，可以不断的重新连接，然后while true readline。<br>查看了外套的循环的作用，发现基本是while true，可能是怕读取到空值后，断开连接，于是加了层循环，若读取到null后，重新获取inputstream继续readline，找了相关资料，socket发送null，基本就是等于断开连接了。于是删除此外套的循环，问题解决。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-09-12T18:28:57+08:00"
-              content="2019-09-12">
-          09-12
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/h_something/tags/java/" rel="tag"># java</a>
+              <a href="/h_something/tags/socket/" rel="tag"># socket</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/h_something/2019/09/12/shell-note/" itemprop="url">
-            <span itemprop="name">shell_note</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/h_something/2019/12/06/windows-problem-1/" rel="prev" title="windows_problem_1">
+      <i class="fa fa-chevron-left"></i> windows_problem_1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/h_something/2020/02/11/pg-pool/" rel="next" title="pg_pool 简单教程">
+      pg_pool 简单教程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -250,6 +312,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#记录一次使用关于通过netcat工具连接socket的问题吧"><span class="nav-number">1.</span> <span class="nav-text">记录一次使用关于通过netcat工具连接socket的问题吧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">1.1.</span> <span class="nav-text">环境</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
