@@ -159,6 +159,115 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2021/01/11/%E6%B5%85%E8%B0%88%E6%8B%86%E5%8C%85%E8%A3%85%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/h_something/images/avatar.gif">
+      <meta itemprop="name" content="Dota2 player">
+      <meta itemprop="description" content="楼下的男人病的要死">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="D">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/h_something/2021/01/11/%E6%B5%85%E8%B0%88%E6%8B%86%E5%8C%85%E8%A3%85%E5%8C%85/" class="post-title-link" itemprop="url">浅谈拆包装包</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-11 15:03:15 / 修改时间：16:54:23" itemprop="dateCreated datePublished" datetime="2021-01-11T15:03:15+08:00">2021-01-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>关于拆包装包这块，以前一直是一知半解，也觉得没有什么需要特别写出来的必要，反正是 JAVA 自带的性质。<br>最近发现里面还是有一些以前不曾在意的机制的，简单说一下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="keyword">new</span> Integer(<span class="number">1</span>) == <span class="keyword">new</span> Integer(<span class="number">1</span>)); <span class="comment">//1</span></span><br><span class="line">    </span><br><span class="line">        System.out.println(<span class="keyword">new</span> Integer(<span class="number">1</span>) == <span class="number">1</span>); <span class="comment">//2</span></span><br><span class="line">    </span><br><span class="line">        System.out.println(<span class="keyword">new</span> Integer(<span class="number">1</span>) + <span class="keyword">new</span> Integer(<span class="number">1</span>) == <span class="number">2</span>); <span class="comment">//3</span></span><br><span class="line">    </span><br><span class="line">        Integer a = <span class="number">1</span>;</span><br><span class="line">        Integer b = <span class="number">1</span>;</span><br><span class="line">        System.out.println(a==b); <span class="comment">//4</span></span><br><span class="line">    </span><br><span class="line">        Integer a1 = <span class="number">128</span>;</span><br><span class="line">        Integer b1 = <span class="number">128</span>;</span><br><span class="line">        System.out.println(a1==b1); <span class="comment">//5</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> a2 = <span class="keyword">new</span> Integer(<span class="number">1236</span>);</span><br><span class="line">        Integer b2 = <span class="keyword">new</span> Integer(<span class="number">1236</span>);</span><br><span class="line">        System.out.println(a2==b2); <span class="comment">//6</span></span><br><span class="line">   </span><br><span class="line">&#125;</span><br><span class="line">可以得到结果:</span><br><span class="line"><span class="keyword">false</span> <span class="comment">//1</span></span><br><span class="line"><span class="keyword">true</span> <span class="comment">//2</span></span><br><span class="line"><span class="keyword">true</span> <span class="comment">//3</span></span><br><span class="line"><span class="keyword">true</span> <span class="comment">//4</span></span><br><span class="line"><span class="keyword">false</span> <span class="comment">//5</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>因为自动装包机制，a 和 b 实际指向的是对象的内存地址。而两个 new 出来的对象地址一定不相等</li>
+<li>因为自动拆包机制，当包装类型与基础类型比较时，会进行拆包，对基础类型的值进行比较，所以相等</li>
+<li>当包装类型进行计算时，会进行自动拆包，故比较的是值，而不是地址，为true。</li>
+<li>因为基础类型的缓存机制，int类型会缓存[-128,127]的值，int a = 1,实际上是类似于调用了 int a = Integet.valueOf(1)，如果缓存中存在，则会直接返回该对象，并不会new，所以同一个对象的内存引用地址一样，故相等</li>
+<li>同上，只是128超出了缓存的范围，因此是new出来的，所以两个对象引用地址不同。</li>
+<li>声明时是 int， int a2 = new Integer(1236) 实际上是 int a2 = new Integer(1236).intValue();  且当包装类型与基础类型比较时，会自动拆表比较值。</li>
+</ol>
+<p>根据自身理解，自动拆包有一下几种情况：</p>
+<ol>
+<li>当存在算术符号时</li>
+<li>当包装类型与基础类型比较时</li>
+<li>声明对象时使用基础类型声明时</li>
+</ol>
+<p>自动包装有以下几种情况：</p>
+<ol>
+<li>声明对象为包装类型时，包括new，和直接给定值。区别在于，new的时候一定是一个新的对象，而后者通常调用了XXX.valueOf(a)，有可能会从缓存中直接获取。<ul>
+<li>int a = new Integer(1);</li>
+<li>int a = 1;</li>
+</ul>
+</li>
+</ol>
+<p><strong>Tips</strong>：</p>
+<p>包装类型缓存范围如下：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th align="left">范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Byte,Short,Integer,Long</td>
+<td align="left">[-128,127]</td>
+</tr>
+<tr>
+<td>Character</td>
+<td align="left">[0,127] 前128个字符</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td align="left">true,false</td>
+</tr>
+<tr>
+<td>Float, Double</td>
+<td align="left">无缓存</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2020/12/17/docker-es/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -355,80 +464,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2020/06/07/d/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/h_something/images/avatar.gif">
-      <meta itemprop="name" content="Dota2 player">
-      <meta itemprop="description" content="楼下的男人病的要死">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="D">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/h_something/2020/06/07/d/" class="post-title-link" itemprop="url">d</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-06-07 12:03:09" itemprop="dateCreated datePublished" datetime="2020-06-07T12:03:09+08:00">2020-06-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-19 16:40:32" itemprop="dateModified" datetime="2020-11-19T16:40:32+08:00">2020-11-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/h_something/categories/d/" itemprop="url" rel="index"><span itemprop="name">d</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这种艺术真的很难领悟</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2020/06/07/JVM%20%E8%B0%83%E8%AF%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -484,6 +519,80 @@
 
       
           <p>java -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=18081 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.rmi.port=18081 -Djava.rmi.server.hostname=120.197.152.99 -jar X.jar</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2020/06/07/d/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/h_something/images/avatar.gif">
+      <meta itemprop="name" content="Dota2 player">
+      <meta itemprop="description" content="楼下的男人病的要死">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="D">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/h_something/2020/06/07/d/" class="post-title-link" itemprop="url">d</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-07 12:03:09" itemprop="dateCreated datePublished" datetime="2020-06-07T12:03:09+08:00">2020-06-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-19 16:40:32" itemprop="dateModified" datetime="2020-11-19T16:40:32+08:00">2020-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/h_something/categories/d/" itemprop="url" rel="index"><span itemprop="name">d</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这种艺术真的很难领悟</p>
 
       
     </div>
@@ -1136,89 +1245,11 @@ jdk: 1.8.0_201-b09 </code></pre><p>在写连接设备程序时，用到了</p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ddota2.gitee.io/2019/09/12/shell-note/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/h_something/images/avatar.gif">
-      <meta itemprop="name" content="Dota2 player">
-      <meta itemprop="description" content="楼下的男人病的要死">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="D">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/h_something/2019/09/12/shell-note/" class="post-title-link" itemprop="url">shell_note</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-09-12 18:28:57" itemprop="dateCreated datePublished" datetime="2019-09-12T18:28:57+08:00">2019-09-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-19 16:41:15" itemprop="dateModified" datetime="2020-11-19T16:41:15+08:00">2020-11-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/h_something/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ol>
-<li>获取脚本的目录<br> SHELL_FOLDER=$(dirname $(readlink -f “$0”))<br> SHELL_FOLDER=$(cd “$(dirname “$0”)”;pwd)</li>
-<li>检测目录是否存在，不存在则创建<br>if [ ! -d “$1” ];then<br> mkdir $1<br>fi</li>
-</ol>
-<p>-f : 文件<br>-d : 目录</p>
-<ol start="3">
-<li>nohup(包括但不限于) 中0,1,2意义：<br>文件描述符:<br> 0： 标准输入(stdin)<br> 1： 标准输出(stdout)<br> 2： 标准错误输出(stderr)<br> command &gt; file    将输出重定向到 file。<br> command &lt; file    将输入重定向到 file。<br> command &gt;&gt; file    将输出以追加的方式重定向到 file。<br> n &gt; file    将文件描述符为 n 的文件重定向到 file。<br> n &gt;&gt; file    将文件描述符为 n 的文件以追加的方式重定向到 file。<br> n &gt;&amp; m    将输出文件 m 和 n 合并。<br> n &lt;&amp; m    将输入文件 m 和 n 合并。<br> &lt;&lt; tag    将开始标记 tag 和结束标记 tag 之间的内容作为输入。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/h_something/page/2/">2</a><a class="extend next" rel="next" href="/h_something/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -1283,7 +1314,7 @@ jdk: 1.8.0_201-b09 </code></pre><p>在写连接设备程序时，用到了</p>
       <div class="site-state-item site-state-posts">
           <a href="/h_something/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1323,7 +1354,7 @@ jdk: 1.8.0_201-b09 </code></pre><p>在写连接设备程序时，用到了</p>
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
