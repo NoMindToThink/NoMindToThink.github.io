@@ -159,6 +159,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.ddota.cn/2020/01/02/socket-readLine-%E4%BD%8E%E7%BA%A7%E9%94%99%E8%AF%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="D">
+      <meta itemprop="description" content="与其感慨路难行，不如马上出发。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="冬暖夏凉">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/02/socket-readLine-%E4%BD%8E%E7%BA%A7%E9%94%99%E8%AF%AF/" class="post-title-link" itemprop="url">socket-readLine-低级错误</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-02 16:11:09" itemprop="dateCreated datePublished" datetime="2020-01-02T16:11:09+08:00">2020-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-19 16:41:30" itemprop="dateModified" datetime="2020-11-19T16:41:30+08:00">2020-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="记录一次使用关于通过netcat工具连接socket的问题吧"><a href="#记录一次使用关于通过netcat工具连接socket的问题吧" class="headerlink" title="记录一次使用关于通过netcat工具连接socket的问题吧"></a>记录一次使用关于通过netcat工具连接socket的问题吧</h1><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><pre><code>本地环境
+win10 企业版（2019-1206安装，奇怪不应该是专业版吗，而且我没重装系统呀，难道是上次注册表的问题？）: 
+netcat: v1.12 NT
+jdk: 1.8.0_112
+正式环境
+ubuntu: 16.04.6
+netcat: OpenBSD netcat (Debian patchlevel 1.105-7ubuntu1)
+jdk: 1.8.0_201-b09 </code></pre><p>在写连接设备程序时，用到了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String sb = bufferedReader.readLine()</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>程序直接部署上去，结果一夜过后发现几个T的容量直接沾满了，导致数据库挂掉了。于是查看一下是因为此程序的log写满了，觉着奇怪。删掉日志文件，重新启动，日志也没有飞速增加。<br>但是，当我使用ubuntu的nc工具连接然后断开时，发现几乎以满IO的速度写入日志。发现 bufferedReader.readLine() 不断的获取到null，然后空指针异常填满了日志。于是程序改成了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ((line = bufferedReader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样改了之后，日志确实不会继续增加了，但是发现一个新的问题，每断开一个连接，cpu就会占满一个核，使用top命令发现%CPU指数基本为（断开次数*100%），于是发现是 nc 工具ctrl+c后不会关闭socket的问题。<br>因为我外部还套了一层循环，但是在windows使用nc测试时，如果断开连接则会抛出异常Connection reset，从而跳出循环。也就不存在什么资源占用的问题。但是ubuntu的nc命令，断开连接后，socket 仍然未关闭，可以不断的重新连接，然后while true readline。<br>查看了外套的循环的作用，发现基本是while true，可能是怕读取到空值后，断开连接，于是加了层循环，若读取到null后，重新获取inputstream继续readline，找了相关资料，socket发送null，基本就是等于断开连接了。于是删除此外套的循环，问题解决。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://blog.ddota.cn/2019/12/06/windows-problem-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -390,7 +475,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -403,7 +488,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -430,7 +515,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
